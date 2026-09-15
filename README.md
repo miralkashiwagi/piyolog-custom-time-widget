@@ -1,0 +1,118 @@
+# Tracker Widget (Custom1他対応 / 小・大2サイズ)
+
+指定したURLのJSONから、任意のtype（Custom1, Pee, Formulaなど）の最新レコードを
+「◯時間◯分前 (HH:mm)」の形式で表示するAndroidホーム画面ウィジェットです。
+
+- 小ウィジェット: type1つを表示
+- 大ウィジェット: type最大3つを同時表示（空欄にした行は非表示になります）
+- 30分ごとに自動更新（Android標準の最小間隔）
+- ウィジェットをタップすると即座に手動更新
+- URLとtype名はウィジェットごとに設定画面から自由入力・後から変更可能
+  （URLが90日ごとに変わる場合は、ウィジェットを長押し→設定 からURLを更新してください）
+
+## 導入手順（GitHub Actions / Android Studio不要）
+
+Android StudioもAndroid SDKもローカルにインストールせず、GitHubのクラウド上でAPKをビルドする方法です。
+必要なのは **GitHubアカウント** と **git** （またはブラウザからのファイルアップロード）だけです。
+
+### 1. GitHubに新しいリポジトリを作る
+GitHub上で新規リポジトリ（Public/Privateどちらでも可）を作成します。例: `custom1-widget`
+
+### 2. このzipの中身をリポジトリにpushする
+ローカルにgitがある場合:
+```bash
+cd Custom1Widget   # このzipを展開したフォルダ
+git init
+git add .
+git commit -m "Initial commit"
+git branch -M main
+git remote add origin https://github.com/あなたのユーザー名/custom1-widget.git
+git push -u origin main
+```
+gitを使わない場合は、GitHubのWeb UIの「Add file > Upload files」からzipを展開したフォルダの中身（`.github`フォルダも含めて全部）をドラッグ＆ドロップしてもOKです。ただし`.github/workflows/build.yml`が含まれていることを必ず確認してください（隠しフォルダなので見落としやすいです）。
+
+### 3. ビルドが自動で走る
+pushすると、リポジトリの **Actions** タブで「Build APK」というワークフローが自動的に開始されます（数分かかります）。
+手動で走らせたい場合は、Actionsタブ → Build APK → 「Run workflow」ボタンでも実行できます。
+
+### 4. APKをダウンロードする
+ワークフローが緑色のチェックマーク（成功）になったら、そのワークフローの実行結果ページ下部の
+**Artifacts** セクションに `custom1-widget-debug-apk` というzipがあるのでダウンロードします。
+中に `app-debug.apk` が入っています。
+
+### 5. スマホにインストールする
+1. ダウンロードした`app-debug.apk`をAndroid端末に転送（Google Drive経由、USB、メールなど）
+2. 端末の設定で「提供元不明のアプリ」のインストールを許可
+3. APKをタップしてインストール
+4. ホーム画面の「ウィジェットを追加」メニューから「Tracker Widget（小）」「Tracker Widget（大）」を配置
+
+### コードを修正したいとき
+`app/src/main/java/...`内のKotlinファイルや`res`内のレイアウトを編集して、再度`git push`するだけで
+Actionsが再ビルドし、新しいAPKがArtifactsに生成されます。手元でのビルド環境構築は一切不要です。
+
+---
+
+## 導入手順（Android Studio）
+
+1. Android Studioで **File > New > New Project** を選択
+   - テンプレート: **No Activity**（または Empty Views Activity でも可。生成された `MainActivity` 関連ファイルは使わないので削除してOK）
+   - Language: **Kotlin**
+   - Minimum SDK: **API 26 (Android 8.0)以上**
+   - Package name（applicationId）は自由でよいですが、ここでは `com.example.custom1widget` を前提にファイルを作っています。別のパッケージ名にする場合は、このzip内の全`.kt`ファイル先頭の `package com.example.custom1widget` と、AndroidManifest.xml内の `android:name="."〜"` の参照、`android.appwidget.provider` の `@xml/...` 参照はそのままで大丈夫です（パッケージ名はディレクトリ構成とファイル冒頭のpackage宣言だけ揃っていればOK）。
+
+2. プロジェクトが作成されたら、このzipの中身を以下のように配置（上書き）してください。
+
+```
+あなたのプロジェクト/
+└── app/
+    ├── build.gradle.kts          ← このzipの内容で置き換え（既存のdependenciesが必要ならマージ）
+    └── src/main/
+        ├── AndroidManifest.xml   ← このzipの内容で置き換え
+        ├── java/com/example/custom1widget/
+        │   ├── TrackerCore.kt
+        │   ├── WidgetPrefs.kt
+        │   ├── WidgetProviderSmall.kt
+        │   ├── WidgetProviderLarge.kt
+        │   ├── WidgetConfigureSmallActivity.kt
+        │   └── WidgetConfigureLargeActivity.kt
+        └── res/
+            ├── drawable/widget_background.xml
+            ├── layout/
+            │   ├── widget_small.xml
+            │   ├── widget_large.xml
+            │   ├── activity_configure_small.xml
+            │   └── activity_configure_large.xml
+            ├── values/strings.xml（既存のstrings.xmlとマージしてください。app_nameのみ追加）
+            └── xml/
+                ├── tracker_widget_small_info.xml
+                └── tracker_widget_large_info.xml
+```
+
+   - `MainActivity.kt` や `activity_main.xml` など、テンプレートが生成した不要なファイルは削除して構いません。
+   - `mipmap` のアプリアイコン（`ic_launcher`）はテンプレートのものがそのまま使えます。
+
+3. Android Studio右上の **Sync Now**（Gradle同期）を実行し、エラーが出ないことを確認。
+
+4. 実機またはエミュレータでアプリを一度インストール（Run）してください。
+   ※このアプリには通常の画面（ランチャーアイコン）はありません。インストール後、ホーム画面の「ウィジェットを追加」メニューに以下の2つが表示されます。
+   - **Tracker Widget（小）**
+   - **Tracker Widget（大）**
+
+5. ホーム画面にウィジェットをドラッグして配置すると、設定画面が開きます。
+   - 小ウィジェット: URLと表示したいtype名（例: `Custom1`）を入力して保存
+   - 大ウィジェット: URLと、type名を最大3つ（例: `Custom1` / `Pee` / `Formula`）入力して保存
+     - 使わない行は空欄のままでOKです
+
+6. 配置後はウィジェットをタップするといつでも手動更新できます。またOS標準で約30分ごとに自動更新されます。
+
+## URLが90日ごとに変わったとき
+
+該当のウィジェットを長押しして「ウィジェット設定」を選ぶと、設定画面が再度開き、
+URLを入力し直して保存できます（他の設定内容はそのまま引き継がれます）。
+
+## 補足
+
+- typeの照合は完全一致（大文字小文字も区別）です。JSON内の `"type":"Custom1"` のような表記に合わせて入力してください。
+- ネットワークエラーやHTTPエラー時は「取得失敗」と表示されます。
+- 認証（APIキー等）は現状未対応です。必要になった場合は `TrackerCore.fetchJson()` 内の
+  `connection.setRequestProperty(...)` にヘッダーを追加してください。
