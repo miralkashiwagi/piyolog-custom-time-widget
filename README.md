@@ -15,6 +15,11 @@
 Android StudioもAndroid SDKもローカルにインストールせず、GitHubのクラウド上でAPKをビルドする方法です。
 必要なのは **GitHubアカウント** と **git** （またはブラウザからのファイルアップロード）だけです。
 
+このプロジェクトにはGradle公式が推奨する **Gradle Wrapper**（`gradlew` / `gradlew.bat` / `gradle/wrapper/`）が
+同梱されています。CIでもローカルでも、Gradle自体を別途インストールする必要はなく、常に
+`./gradlew`（Windowsは`gradlew.bat`）経由でビルドが実行され、プロジェクトが指定したバージョンの
+Gradleが自動的にダウンロード・使用されます。
+
 ### 1. GitHubに新しいリポジトリを作る
 GitHub上で新規リポジトリ（Public/Privateどちらでも可）を作成します。例: `custom1-widget`
 
@@ -45,6 +50,26 @@ pushすると、リポジトリの **Actions** タブで「Build APK」という
 2. 端末の設定で「提供元不明のアプリ」のインストールを許可
 3. APKをタップしてインストール
 4. ホーム画面の「ウィジェットを追加」メニューから「Tracker Widget（小）」「Tracker Widget（大）」を配置
+
+### トラブルシューティング
+
+- **`sdkmanager tools` で失敗する / `Failed to find package 'tools'`**: これは古いバージョンのワークフローで`android-actions/setup-android`アクションを使っていた場合に発生する既知の問題です（Googleが廃止したパッケージを要求してしまう）。このzipの`build.yml`では該当アクションを使わず、GitHubランナーにプリインストール済みのAndroid SDKをそのまま使う構成に修正済みです。
+- **Permission denied: ./gradlew**: `chmod +x ./gradlew`が必要です（`build.yml`には既に含めています。ローカルでcloneした直後に手動実行する場合も同様にしてください）。
+
+### コマンドラインのみでビルドしたい場合（Android Studio不要・PC上）
+
+Wrapperが同梱されているため、PC側で用意するのはJDK 17とAndroid SDK（`sdkmanager`が使えれば十分）だけです。Gradle自体のインストールは不要です。
+
+```bash
+export ANDROID_HOME=/path/to/android-sdk
+yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses
+$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager "platform-tools" "platforms;android-34" "build-tools;34.0.0"
+
+./gradlew assembleDebug
+# 生成物: app/build/outputs/apk/debug/app-debug.apk
+
+adb install app/build/outputs/apk/debug/app-debug.apk
+```
 
 ### コードを修正したいとき
 `app/src/main/java/...`内のKotlinファイルや`res`内のレイアウトを編集して、再度`git push`するだけで
