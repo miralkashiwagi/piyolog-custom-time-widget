@@ -50,6 +50,7 @@ class WidgetConfigureSmallActivity : Activity() {
 
             WidgetPrefs.saveUrl(this, appWidgetId, url)
             WidgetPrefs.saveType(this, appWidgetId, slot = 1, type = type)
+            WidgetPrefs.clearGeneratedAt(this, appWidgetId)
 
             val appWidgetManager = AppWidgetManager.getInstance(this)
             WidgetProviderSmall.updateWidget(this, appWidgetManager, appWidgetId)
