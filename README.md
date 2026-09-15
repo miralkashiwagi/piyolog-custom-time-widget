@@ -19,7 +19,7 @@
 ## 開発手順（GitHub Actions）
 ### ビルド
 1. pushすると、リポジトリの **Actions** タブでワークフローが自動的に開始されます（数分かかります）。
-2. ワークフローが緑色のチェックマーク（成功）になったら、そのワークフローの実行結果ページ下部の**Artifacts** セクションに `piyolog-time-widget-debug-apk` というzipがあるのでダウンロードします。中に `app-piyolog-time-widget.apk` が入っています。
+2. ワークフローが緑色のチェックマーク（成功）になったら、そのワークフローの実行結果ページ下部の**Artifacts** セクションに `piyolog-time-widget-release-apk` というzipがあるのでダウンロードします。中に `app-piyolog-time-widget.apk` が入っています。
 
 ## 補足
 - typeの照合は完全一致（大文字小文字も区別）です。JSON内の `"type":"授乳"` のような表記に合わせて入力してください。
