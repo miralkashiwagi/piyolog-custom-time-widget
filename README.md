@@ -13,7 +13,7 @@
 ## 開発手順（GitHub Actions）
 ### ビルド
 1. pushすると、リポジトリの **Actions** タブでワークフローが自動的に開始されます（数分かかります）。
-2. ワークフローが緑色のチェックマーク（成功）になったら、そのワークフローの実行結果ページ下部の**Artifacts** セクションに `piyolog-time-widget-debug-apk` というzipがあるのでダウンロードします。中に `app-piyolog-time-widget.apk` が入っています。
+2. ワークフローが緑色のチェックマーク（成功）になったら、そのワークフローの実行結果ページ下部の**Artifacts** セクションに `piyolog-time-widget-release-apk` というzipがあるのでダウンロードします。中に `app-piyolog-time-widget.apk` が入っています。
 
 ### スマホにインストール
 1. ダウンロードした`app-piyolog-time-widget.apk`をAndroid端末に転送（Google Drive経由、USB、メールなど）
