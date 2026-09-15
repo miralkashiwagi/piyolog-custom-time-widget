@@ -5,5 +5,7 @@
     android:updatePeriodMillis="1800000"
     android:initialLayout="@layout/widget_small"
     android:configure="com.example.piyologtimewidget.WidgetConfigureSmallActivity"
-    android:resizeMode="none"
+    android:resizeMode="horizontal|vertical"
+    android:minResizeWidth="40dp"
+    android:minResizeHeight="40dp"
     android:widgetCategory="home_screen" />
