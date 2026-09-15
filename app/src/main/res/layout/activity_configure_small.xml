@@ -31,8 +31,7 @@
         android:id="@+id/type_input"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="例: Custom1"
-        android:text="Custom1" />
+        android:hint="JSONのtype値を入力" />
 
     <Button
         android:id="@+id/save_button"

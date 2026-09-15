@@ -17,7 +17,7 @@
             android:id="@+id/label_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Custom1"
+            android:text="ぴよログAPI"
             android:textSize="12sp"
             android:textColor="#888888" />
 

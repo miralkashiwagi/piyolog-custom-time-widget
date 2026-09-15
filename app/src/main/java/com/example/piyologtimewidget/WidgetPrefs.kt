@@ -1,4 +1,4 @@
-package com.example.custom1widget
+package com.example.piyologtimewidget
 
 import android.content.Context
 
@@ -7,7 +7,7 @@ import android.content.Context
  * 現在はtypeを1つだけ保存するため、slot=1を使用する。
  */
 object WidgetPrefs {
-    private const val PREFS_NAME = "com.example.custom1widget.WidgetPrefs"
+    private const val PREFS_NAME = "com.example.piyologtimewidget.WidgetPrefs"
     private const val KEY_URL = "appwidget_url_"
     private const val KEY_TYPE = "appwidget_type_" // + "${slot}_${appWidgetId}"
 
@@ -28,7 +28,7 @@ object WidgetPrefs {
             .apply()
     }
 
-    /** 未設定の場合はdefaultValueを返す（小ウィジェットのデフォルトはCustom1） */
+    /** 未設定の場合はdefaultValueを返す（未設定時は空文字列） */
     fun loadType(context: Context, appWidgetId: Int, slot: Int, defaultValue: String = ""): String {
         return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
             .getString(KEY_TYPE + slot + "_" + appWidgetId, null) ?: defaultValue

@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.custom1widget"
+    namespace = "com.example.piyologtimewidget"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.custom1widget"
+        applicationId = "com.example.piyologtimewidget"
         minSdk = 26
         targetSdk = 34
         versionCode = 1
@@ -33,4 +33,12 @@ android {
 
 dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        variant.outputs.forEach { output ->
+            output.outputFileName.set("app-piyolog-time-widget.apk")
+        }
+    }
 }
