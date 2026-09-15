@@ -8,7 +8,7 @@ import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 /**
- * 複数のウィジェット(小/大)から共有される、JSON取得〜表示文字列組み立てのロジック。
+ * ウィジェットで共有する、JSON取得〜表示文字列組み立てのロジック。
  */
 object TrackerCore {
 

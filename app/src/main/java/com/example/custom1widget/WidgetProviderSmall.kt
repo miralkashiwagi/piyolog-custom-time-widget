@@ -32,6 +32,15 @@ class WidgetProviderSmall : AppWidgetProvider() {
             )
             views.setOnClickPendingIntent(R.id.widget_root, pendingIntent)
 
+            val configureIntent = Intent(context, WidgetConfigureSmallActivity::class.java).apply {
+                action = AppWidgetManager.ACTION_APPWIDGET_CONFIGURE
+                putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
+            }
+            val configurePendingIntent = PendingIntent.getActivity(
+                context, appWidgetId, configureIntent, flags
+            )
+            views.setOnClickPendingIntent(R.id.settings_button, configurePendingIntent)
+
             val url = WidgetPrefs.loadUrl(context, appWidgetId)
             val type = WidgetPrefs.loadType(context, appWidgetId, slot = 1, defaultValue = "Custom1")
             views.setTextViewText(R.id.label_text, type)
