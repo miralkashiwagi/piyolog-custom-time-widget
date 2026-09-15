@@ -5,18 +5,16 @@ import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.widget.RemoteViews
-import androidx.work.Constraints
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
+import java.util.concurrent.Executors
 
 class WidgetProviderSmall : AppWidgetProvider() {
 
     companion object {
         const val ACTION_REFRESH = "com.example.piyologtimewidget.ACTION_REFRESH_SMALL"
+        private val executor = Executors.newCachedThreadPool()
+
         fun updateWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
             val views = RemoteViews(context.packageName, R.layout.widget_small)
 
@@ -24,7 +22,11 @@ class WidgetProviderSmall : AppWidgetProvider() {
                 action = ACTION_REFRESH
                 putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId)
             }
-            val flags = PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            val flags = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            } else {
+                PendingIntent.FLAG_UPDATE_CURRENT
+            }
             val pendingIntent = PendingIntent.getBroadcast(
                 context, appWidgetId, refreshIntent, flags
             )
@@ -50,22 +52,22 @@ class WidgetProviderSmall : AppWidgetProvider() {
                 return
             }
 
-            views.setTextViewText(R.id.time_ago_text, "更新待機中…")
+            views.setTextViewText(R.id.time_ago_text, "更新中…")
             appWidgetManager.updateAppWidget(appWidgetId, views)
 
-            val request = OneTimeWorkRequestBuilder<WidgetRefreshWorker>()
-                .setConstraints(
-                    Constraints.Builder()
-                        .setRequiredNetworkType(NetworkType.CONNECTED)
-                        .build()
-                )
-                .setInputData(workDataOf(WidgetRefreshWorker.KEY_APP_WIDGET_ID to appWidgetId))
-                .build()
-            WorkManager.getInstance(context.applicationContext).enqueueUniqueWork(
-                "widget-refresh-$appWidgetId",
-                ExistingWorkPolicy.REPLACE,
-                request
-            )
+            executor.execute {
+                try {
+                    val json = TrackerCore.fetchJson(url)
+                    val latest = TrackerCore.findLatestByType(json, type)
+                    views.setTextViewText(R.id.time_ago_text, TrackerCore.formatResult(latest))
+                    views.setTextViewText(R.id.updated_text, "更新 ${TrackerCore.nowClockLabel()}")
+                } catch (e: Exception) {
+                    views.setTextViewText(R.id.time_ago_text, "取得失敗")
+                    views.setTextViewText(R.id.updated_text, e.message ?: "エラー")
+                } finally {
+                    appWidgetManager.updateAppWidget(appWidgetId, views)
+                }
+            }
         }
     }
 
