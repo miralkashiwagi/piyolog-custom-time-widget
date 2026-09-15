@@ -34,11 +34,3 @@ android {
 dependencies {
     implementation("androidx.core:core-ktx:1.13.1")
 }
-
-androidComponents {
-    onVariants(selector().all()) { variant ->
-        variant.outputs.forEach { output ->
-            output.outputFileName.set("app-piyolog-time-widget.apk")
-        }
-    }
-}
