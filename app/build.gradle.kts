@@ -18,6 +18,8 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            // Sign release artifacts so they can be installed from GitHub Actions.
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
 
