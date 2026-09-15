@@ -52,7 +52,7 @@ class WidgetProviderSmall : AppWidgetProvider() {
                 return
             }
 
-            views.setTextViewText(R.id.time_ago_text, "更新中…")
+            views.setTextViewText(R.id.time_ago_text, "取得中…")
             appWidgetManager.updateAppWidget(appWidgetId, views)
 
             executor.execute {
@@ -60,7 +60,7 @@ class WidgetProviderSmall : AppWidgetProvider() {
                     val json = TrackerCore.fetchJson(url)
                     val latest = TrackerCore.findLatestByType(json, type)
                     views.setTextViewText(R.id.time_ago_text, TrackerCore.formatResult(latest))
-                    views.setTextViewText(R.id.updated_text, "更新 ${TrackerCore.nowClockLabel()}")
+                    views.setTextViewText(R.id.updated_text, "取得 ${TrackerCore.nowClockLabel()}")
                 } catch (e: Exception) {
                     views.setTextViewText(R.id.time_ago_text, "取得失敗")
                     views.setTextViewText(R.id.updated_text, e.message ?: "エラー")
