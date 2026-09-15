@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Custom1Widget"
+rootProject.name = "PiyologTimeWidget"
 include(":app")

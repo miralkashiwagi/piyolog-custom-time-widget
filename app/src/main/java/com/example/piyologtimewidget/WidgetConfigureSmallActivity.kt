@@ -1,4 +1,4 @@
-package com.example.custom1widget
+package com.example.piyologtimewidget
 
 import android.app.Activity
 import android.appwidget.AppWidgetManager

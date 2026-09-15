@@ -1,4 +1,4 @@
-package com.example.custom1widget
+package com.example.piyologtimewidget
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager
@@ -12,7 +12,7 @@ import java.util.concurrent.Executors
 class WidgetProviderSmall : AppWidgetProvider() {
 
     companion object {
-        const val ACTION_REFRESH = "com.example.custom1widget.ACTION_REFRESH_SMALL"
+        const val ACTION_REFRESH = "com.example.piyologtimewidget.ACTION_REFRESH_SMALL"
         private val executor = Executors.newCachedThreadPool()
 
         fun updateWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
@@ -42,8 +42,8 @@ class WidgetProviderSmall : AppWidgetProvider() {
             views.setOnClickPendingIntent(R.id.settings_button, configurePendingIntent)
 
             val url = WidgetPrefs.loadUrl(context, appWidgetId)
-            val type = WidgetPrefs.loadType(context, appWidgetId, slot = 1, defaultValue = "Custom1")
-            views.setTextViewText(R.id.label_text, type)
+            val type = WidgetPrefs.loadType(context, appWidgetId, slot = 1, defaultValue = "")
+            views.setTextViewText(R.id.label_text, type.ifBlank { "ぴよログAPI" })
 
             if (url.isNullOrEmpty()) {
                 views.setTextViewText(R.id.time_ago_text, "URL未設定")
