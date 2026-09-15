@@ -4,7 +4,7 @@ import android.content.Context
 
 /**
  * ウィジェットIDごとにURLと表示対象のtype名を保存する。
- * slotはtype欄の番号（小ウィジェットは1つだけなのでslot=1固定、大ウィジェットはslot=1,2,3を使用）。
+ * 現在はtypeを1つだけ保存するため、slot=1を使用する。
  */
 object WidgetPrefs {
     private const val PREFS_NAME = "com.example.custom1widget.WidgetPrefs"
@@ -37,7 +37,7 @@ object WidgetPrefs {
     fun deleteAll(context: Context, appWidgetId: Int) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
         prefs.remove(KEY_URL + appWidgetId)
-        for (slot in 1..3) {
+        for (slot in 1..1) {
             prefs.remove(KEY_TYPE + slot + "_" + appWidgetId)
         }
         prefs.apply()

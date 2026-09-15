@@ -11,9 +11,10 @@
         android:supportsRtl="true"
         android:theme="@android:style/Theme.DeviceDefault.Light">
 
-        <!-- 小ウィジェット（1項目） -->
+        <!-- ぴよログAPIウィジェット（1項目） -->
         <receiver
             android:name=".WidgetProviderSmall"
+            android:label="@string/widget_name"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -26,28 +27,6 @@
 
         <activity
             android:name=".WidgetConfigureSmallActivity"
-            android:exported="true"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
-            </intent-filter>
-        </activity>
-
-        <!-- 大ウィジェット（最大3項目） -->
-        <receiver
-            android:name=".WidgetProviderLarge"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-                <action android:name="com.example.custom1widget.ACTION_REFRESH_LARGE" />
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/tracker_widget_large_info" />
-        </receiver>
-
-        <activity
-            android:name=".WidgetConfigureLargeActivity"
             android:exported="true"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog">
             <intent-filter>

@@ -1,14 +1,12 @@
-# Tracker Widget (Custom1他対応 / 小・大2サイズ)
+# ぴよログAPI
 
-指定したURLのJSONから、任意のtype（Custom1, Pee, Formulaなど）の最新レコードを
+指定したURLのJSONから、任意のtype（Custom1、Pee、Formulaなど）の最新レコードを
 「◯時間◯分前 (HH:mm)」の形式で表示するAndroidホーム画面ウィジェットです。
 
-- 小ウィジェット: type1つを表示
-- 大ウィジェット: type最大3つを同時表示（空欄にした行は非表示になります）
+- 2 x 1サイズのウィジェットでtypeを1つ表示
 - 30分ごとに自動更新（Android標準の最小間隔）
-- ウィジェットをタップすると即座に手動更新
-- URLとtype名はウィジェットごとに設定画面から自由入力・後から変更可能
-  （URLが90日ごとに変わる場合は、ウィジェットを長押し→設定 からURLを更新してください）
+- ウィジェット本体をタップすると即座に手動更新
+- 右上の歯車アイコンから、URLとtype名をいつでも再設定可能
 
 ## 導入手順（GitHub Actions / Android Studio不要）
 
@@ -49,7 +47,7 @@ pushすると、リポジトリの **Actions** タブで「Build APK」という
 1. ダウンロードした`app-debug.apk`をAndroid端末に転送（Google Drive経由、USB、メールなど）
 2. 端末の設定で「提供元不明のアプリ」のインストールを許可
 3. APKをタップしてインストール
-4. ホーム画面の「ウィジェットを追加」メニューから「Tracker Widget（小）」「Tracker Widget（大）」を配置
+4. ホーム画面の「ウィジェットを追加」メニューから「ぴよログAPI」を配置
 
 ### トラブルシューティング
 
@@ -97,20 +95,17 @@ Actionsが再ビルドし、新しいAPKがArtifactsに生成されます。手�
         │   ├── TrackerCore.kt
         │   ├── WidgetPrefs.kt
         │   ├── WidgetProviderSmall.kt
-        │   ├── WidgetProviderLarge.kt
         │   ├── WidgetConfigureSmallActivity.kt
-        │   └── WidgetConfigureLargeActivity.kt
         └── res/
-            ├── drawable/widget_background.xml
+            ├── drawable/
+            │   ├── widget_background.xml
+            │   └── ic_settings.xml
             ├── layout/
             │   ├── widget_small.xml
-            │   ├── widget_large.xml
             │   ├── activity_configure_small.xml
-            │   └── activity_configure_large.xml
             ├── values/strings.xml（既存のstrings.xmlとマージしてください。app_nameのみ追加）
             └── xml/
-                ├── tracker_widget_small_info.xml
-                └── tracker_widget_large_info.xml
+                └── tracker_widget_small_info.xml
 ```
 
    - `MainActivity.kt` や `activity_main.xml` など、テンプレートが生成した不要なファイルは削除して構いません。
@@ -119,21 +114,18 @@ Actionsが再ビルドし、新しいAPKがArtifactsに生成されます。手�
 3. Android Studio右上の **Sync Now**（Gradle同期）を実行し、エラーが出ないことを確認。
 
 4. 実機またはエミュレータでアプリを一度インストール（Run）してください。
-   ※このアプリには通常の画面（ランチャーアイコン）はありません。インストール後、ホーム画面の「ウィジェットを追加」メニューに以下の2つが表示されます。
-   - **Tracker Widget（小）**
-   - **Tracker Widget（大）**
+   ※このアプリには通常の画面（ランチャーアイコン）はありません。インストール後、ホーム画面の「ウィジェットを追加」メニューに以下のウィジェットが表示されます。
+   - **ぴよログAPI**
 
 5. ホーム画面にウィジェットをドラッグして配置すると、設定画面が開きます。
-   - 小ウィジェット: URLと表示したいtype名（例: `Custom1`）を入力して保存
-   - 大ウィジェット: URLと、type名を最大3つ（例: `Custom1` / `Pee` / `Formula`）入力して保存
-     - 使わない行は空欄のままでOKです
+   - URLと表示したいtype名（例: `Custom1`）を入力して保存
 
-6. 配置後はウィジェットをタップするといつでも手動更新できます。またOS標準で約30分ごとに自動更新されます。
+6. 配置後はウィジェット本体をタップするといつでも手動更新できます。右上の歯車アイコンをタップするとURLとtype名を再設定できます。またOS標準で約30分ごとに自動更新されます。
 
 ## URLが90日ごとに変わったとき
 
-該当のウィジェットを長押しして「ウィジェット設定」を選ぶと、設定画面が再度開き、
-URLを入力し直して保存できます（他の設定内容はそのまま引き継がれます）。
+該当のウィジェット右上にある歯車アイコンをタップすると設定画面が開き、
+URLとtype名を入力し直して保存できます。
 
 ## 補足
 

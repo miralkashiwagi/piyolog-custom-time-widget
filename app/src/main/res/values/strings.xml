@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Custom1 Widget</string>
+    <string name="app_name">ぴよログAPI</string>
+    <string name="widget_name">ぴよログAPI</string>
+    <string name="configure_widget">ウィジェットを設定</string>
 </resources>
