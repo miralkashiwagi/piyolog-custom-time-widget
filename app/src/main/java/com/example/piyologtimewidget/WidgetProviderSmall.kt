@@ -17,6 +17,7 @@ class WidgetProviderSmall : AppWidgetProvider() {
 
         fun updateWidget(context: Context, appWidgetManager: AppWidgetManager, appWidgetId: Int) {
             val views = RemoteViews(context.packageName, R.layout.widget_small)
+            applyTextSizes(appWidgetManager, appWidgetId, views)
 
             val refreshIntent = Intent(context, WidgetProviderSmall::class.java).apply {
                 action = ACTION_REFRESH
@@ -69,6 +70,30 @@ class WidgetProviderSmall : AppWidgetProvider() {
                 }
             }
         }
+
+        /** Scale the three labels from the smallest side of the resized widget. */
+        private fun applyTextSizes(
+            appWidgetManager: AppWidgetManager,
+            appWidgetId: Int,
+            views: RemoteViews
+        ) {
+            val options = appWidgetManager.getAppWidgetOptions(appWidgetId)
+            val smallestSide = minOf(
+                options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH, 40),
+                options.getInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT, 40)
+            )
+            val scale = (smallestSide / 40f).coerceIn(1f, 2f)
+
+            views.setTextViewTextSize(
+                R.id.label_text, android.util.TypedValue.COMPLEX_UNIT_SP, 8f * scale
+            )
+            views.setTextViewTextSize(
+                R.id.time_ago_text, android.util.TypedValue.COMPLEX_UNIT_SP, 12f * scale
+            )
+            views.setTextViewTextSize(
+                R.id.updated_text, android.util.TypedValue.COMPLEX_UNIT_SP, 6f * scale
+            )
+        }
     }
 
     override fun onUpdate(
@@ -92,6 +117,15 @@ class WidgetProviderSmall : AppWidgetProvider() {
                 updateWidget(context, AppWidgetManager.getInstance(context), appWidgetId)
             }
         }
+    }
+
+    override fun onAppWidgetOptionsChanged(
+        context: Context,
+        appWidgetManager: AppWidgetManager,
+        appWidgetId: Int,
+        newOptions: android.os.Bundle
+    ) {
+        updateWidget(context, appWidgetManager, appWidgetId)
     }
 
     override fun onDeleted(context: Context, appWidgetIds: IntArray) {
