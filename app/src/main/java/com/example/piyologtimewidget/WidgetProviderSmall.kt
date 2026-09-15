@@ -53,32 +53,16 @@ class WidgetProviderSmall : AppWidgetProvider() {
             }
 
             executor.execute {
-                var shouldUpdateWidget = true
                 try {
                     val json = TrackerCore.fetchJson(url)
-                    val generatedAt = json.optString("generated_at", "")
-                    if (
-                        generatedAt.isNotEmpty() &&
-                        generatedAt == WidgetPrefs.loadGeneratedAt(context, appWidgetId)
-                    ) {
-                        shouldUpdateWidget = false
-                        return@execute
-                    }
-
                     val latest = TrackerCore.findLatestByType(json, type)
                     views.setTextViewText(R.id.time_ago_text, TrackerCore.formatResult(latest))
                     views.setTextViewText(R.id.updated_text, "取得 ${TrackerCore.nowClockLabel()}")
-                    if (generatedAt.isNotEmpty()) {
-                        WidgetPrefs.saveGeneratedAt(context, appWidgetId, generatedAt)
-                    }
                 } catch (e: Exception) {
                     views.setTextViewText(R.id.time_ago_text, "取得失敗")
                     views.setTextViewText(R.id.updated_text, e.message ?: "エラー")
-                } finally {
-                    if (shouldUpdateWidget) {
-                        appWidgetManager.updateAppWidget(appWidgetId, views)
-                    }
                 }
+                appWidgetManager.updateAppWidget(appWidgetId, views)
             }
         }
     }
@@ -102,6 +86,13 @@ class WidgetProviderSmall : AppWidgetProvider() {
             )
             if (appWidgetId != AppWidgetManager.INVALID_APPWIDGET_ID) {
                 updateWidget(context, AppWidgetManager.getInstance(context), appWidgetId)
+            }
+        } else if (intent.action == Intent.ACTION_USER_PRESENT) {
+            val appWidgetManager = AppWidgetManager.getInstance(context)
+            val componentName = android.content.ComponentName(context, WidgetProviderSmall::class.java)
+            val appWidgetIds = appWidgetManager.getAppWidgetIds(componentName)
+            for (appWidgetId in appWidgetIds) {
+                updateWidget(context, appWidgetManager, appWidgetId)
             }
         }
     }

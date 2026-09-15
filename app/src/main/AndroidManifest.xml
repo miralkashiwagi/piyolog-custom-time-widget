@@ -18,6 +18,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+                <action android:name="android.intent.action.USER_PRESENT" />
                 <action android:name="com.example.piyologtimewidget.ACTION_REFRESH_SMALL" />
             </intent-filter>
             <meta-data
