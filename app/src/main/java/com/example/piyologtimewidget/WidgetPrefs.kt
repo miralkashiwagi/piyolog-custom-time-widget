@@ -10,6 +10,7 @@ object WidgetPrefs {
     private const val PREFS_NAME = "com.example.piyologtimewidget.WidgetPrefs"
     private const val KEY_URL = "appwidget_url_"
     private const val KEY_TYPE = "appwidget_type_" // + "${slot}_${appWidgetId}"
+    private const val KEY_GENERATED_AT = "appwidget_generated_at_"
 
     fun saveUrl(context: Context, appWidgetId: Int, url: String) {
         context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
@@ -34,9 +35,28 @@ object WidgetPrefs {
             .getString(KEY_TYPE + slot + "_" + appWidgetId, null) ?: defaultValue
     }
 
+    /** 最後にウィジェットへ反映したレスポンスのgenerated_atを返す。 */
+    fun loadGeneratedAt(context: Context, appWidgetId: Int): String? {
+        return context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+            .getString(KEY_GENERATED_AT + appWidgetId, null)
+    }
+
+    fun saveGeneratedAt(context: Context, appWidgetId: Int, generatedAt: String) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
+            .putString(KEY_GENERATED_AT + appWidgetId, generatedAt)
+            .apply()
+    }
+
+    fun clearGeneratedAt(context: Context, appWidgetId: Int) {
+        context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
+            .remove(KEY_GENERATED_AT + appWidgetId)
+            .apply()
+    }
+
     fun deleteAll(context: Context, appWidgetId: Int) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).edit()
         prefs.remove(KEY_URL + appWidgetId)
+        prefs.remove(KEY_GENERATED_AT + appWidgetId)
         for (slot in 1..1) {
             prefs.remove(KEY_TYPE + slot + "_" + appWidgetId)
         }

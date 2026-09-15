@@ -52,20 +52,32 @@ class WidgetProviderSmall : AppWidgetProvider() {
                 return
             }
 
-            views.setTextViewText(R.id.time_ago_text, "取得中…")
-            appWidgetManager.updateAppWidget(appWidgetId, views)
-
             executor.execute {
+                var shouldUpdateWidget = true
                 try {
                     val json = TrackerCore.fetchJson(url)
+                    val generatedAt = json.optString("generated_at", "")
+                    if (
+                        generatedAt.isNotEmpty() &&
+                        generatedAt == WidgetPrefs.loadGeneratedAt(context, appWidgetId)
+                    ) {
+                        shouldUpdateWidget = false
+                        return@execute
+                    }
+
                     val latest = TrackerCore.findLatestByType(json, type)
                     views.setTextViewText(R.id.time_ago_text, TrackerCore.formatResult(latest))
                     views.setTextViewText(R.id.updated_text, "取得 ${TrackerCore.nowClockLabel()}")
+                    if (generatedAt.isNotEmpty()) {
+                        WidgetPrefs.saveGeneratedAt(context, appWidgetId, generatedAt)
+                    }
                 } catch (e: Exception) {
                     views.setTextViewText(R.id.time_ago_text, "取得失敗")
                     views.setTextViewText(R.id.updated_text, e.message ?: "エラー")
                 } finally {
-                    appWidgetManager.updateAppWidget(appWidgetId, views)
+                    if (shouldUpdateWidget) {
+                        appWidgetManager.updateAppWidget(appWidgetId, views)
+                    }
                 }
             }
         }
