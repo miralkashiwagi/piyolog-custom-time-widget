@@ -15,11 +15,32 @@ android {
         versionName = "1"
     }
 
+    signingConfigs {
+        create("release") {
+            // These are provided as environment variables by the GitHub Actions
+            // workflow (decoded from secrets). This keystore is fixed, so every
+            // build produces an APK signed with the same key and can be
+            // reinstalled/updated on a device without a signature conflict.
+            val ksPath = System.getenv("RELEASE_KEYSTORE_PATH")
+            if (ksPath != null) {
+                storeFile = file(ksPath)
+                storePassword = System.getenv("RELEASE_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("RELEASE_KEY_ALIAS")
+                keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
-            // Sign release artifacts so they can be installed from GitHub Actions.
-            signingConfig = signingConfigs.getByName("debug")
+            // Always sign with the fixed release key (falls back to debug only
+            // for local builds where the env vars above aren't set).
+            signingConfig = if (System.getenv("RELEASE_KEYSTORE_PATH") != null) {
+                signingConfigs.getByName("release")
+            } else {
+                signingConfigs.getByName("debug")
+            }
         }
     }
 

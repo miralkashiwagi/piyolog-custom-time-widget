@@ -9,3 +9,7 @@
 .cxx
 local.properties
 app/build
+
+# Never commit the release signing key
+release.keystore
+keystore-secrets.txt
