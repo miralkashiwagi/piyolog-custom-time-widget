@@ -14,8 +14,13 @@
 2. 端末の設定で「提供元不明のアプリ」のインストールを許可
 3. APKをタップしてインストール
 4. ホーム画面の「ウィジェットを追加」メニューから「ぴよログAPI」を配置
+5. ぴよログAPIのURLと、JSON内のtypeをウィジェットに設定
 
 ## 開発手順（GitHub Actions）
+### 変更時のバージョン番号アップ
+https://github.com/miralkashiwagi/piyolog-custom-time-widget/blob/60350307598fe3a58ccbd573dde31d2d92f320fa/app/build.gradle.kts#L14-L15
+のバージョンを変更するとapkインストール時、古いバージョンがインストール済みでも、apkからインストールでアップデートできるようになります。
+
 ### ビルド
 1. pushすると、リポジトリの **Actions** タブでワークフローが自動的に開始されます（数分かかります）。
 2. ワークフローが緑色のチェックマーク（成功）になったら、そのワークフローの実行結果ページ下部の**Artifacts** セクションに `piyolog-time-widget-release-apk` というzipがあるのでダウンロードします。中に `app-piyolog-time-widget.apk` が入っています。
