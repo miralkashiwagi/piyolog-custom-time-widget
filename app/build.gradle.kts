@@ -21,12 +21,15 @@ android {
             // workflow (decoded from secrets). This keystore is fixed, so every
             // build produces an APK signed with the same key and can be
             // reinstalled/updated on a device without a signature conflict.
+            // Note: this keystore is PKCS12 (the keytool default since JDK 9),
+            // which requires the store password and key password to be
+            // identical, so we reuse the same value for both.
             val ksPath = System.getenv("RELEASE_KEYSTORE_PATH")
             if (ksPath != null) {
                 storeFile = file(ksPath)
                 storePassword = System.getenv("RELEASE_KEYSTORE_PASSWORD")
                 keyAlias = System.getenv("RELEASE_KEY_ALIAS")
-                keyPassword = System.getenv("RELEASE_KEY_PASSWORD")
+                keyPassword = System.getenv("RELEASE_KEYSTORE_PASSWORD")
             }
         }
     }
