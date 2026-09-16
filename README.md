@@ -18,7 +18,7 @@
 
 ## 開発手順（GitHub Actions）
 ### 変更時のバージョン番号アップ
-https://github.com/miralkashiwagi/piyolog-custom-time-widget/blob/60350307598fe3a58ccbd573dde31d2d92f320fa/app/build.gradle.kts#L14-L15
+https://github.com/miralkashiwagi/piyolog-custom-time-widget/blob/main/app/build.gradle.kts#L14-L15
 のバージョンを変更するとapkインストール時、古いバージョンがインストール済みでも、apkからインストールでアップデートできるようになります。
 
 ### ビルド
